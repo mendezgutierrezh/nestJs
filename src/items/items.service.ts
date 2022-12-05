@@ -1,15 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { Items, ItemsDocument } from './schema/items.schema';
 
 @Injectable()
 export class ItemsService {
-  create(createItemDto: CreateItemDto) {
-    return 'This action adds a new item';
+  constructor(
+    @InjectModel(Items.name) private itemsModule: Model<ItemsDocument>,
+  ) {}
+  async create(createItemDto: CreateItemDto) {
+    const itemCreate = await this.itemsModule.create(createItemDto);
+    return itemCreate;
   }
 
-  findAll() {
-    return `This action returns all items`;
+  async findAll() {
+    const list = await this.itemsModule.find();
+    return list;
   }
 
   findOne(id: number) {
